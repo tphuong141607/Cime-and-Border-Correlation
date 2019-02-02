@@ -1,0 +1,16 @@
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+
+with urlopen("https://en.wikipedia.org/wiki/List_of_United_States_cities_by_crime_rate") as url:
+    soup = BeautifulSoup(url)
+
+"""This is to get the HTML data:"""
+soup.prettify()
+
+"""After we do the prettify we have to find the tag named "wikitable". That tag will follow the table with all the cities we would need."""
+
+
+
+"""This is to get the links for each city. I'm still working on it because it also returns some unnecessary links from the beginning of the HTML document"""
+links = [(link.string, link["href"]) for link in soup.find_all("a") if link.has_attr("href")]
+print(links)
