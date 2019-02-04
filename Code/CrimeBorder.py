@@ -12,14 +12,14 @@ import scipy
 import requests
 from bs4 import BeautifulSoup
     
-"""The "main" program starts here"""
+"""The 'main' program starts here"""
 
 def main():
     #Variables
-    DATA_DIRECTORY = "../data/" 
-    CACHE_DIRECTORY = "../cache/" 
-    CITY_FILE = "mainPage"
-    MAIN_WEB_PATH = CACHE_DIRECTORY + CITY_FILE + ".html"
+    DATA_DIRECTORY = '../data/' 
+    CACHE_DIRECTORY = '../cache/' 
+    CITY_FILE = 'mainPage'
+    MAIN_WEB_PATH = CACHE_DIRECTORY + CITY_FILE + '.html'
 
     WEB_DOMAIN_NAME = 'https://en.wikipedia.org'
     WEB_PATH = '/wiki/List_of_United_States_cities_by_crime_rate'  
@@ -41,14 +41,14 @@ def main():
     border_cities.append({'name':'Del Rio', 'lat':29.370833, 'lon': -100.89583})
     border_cities.append({'name':'Brownsville', 'lat':25.93028, 'lon': -97.48444})
     
-    # Check if the needed html page is stored locally, if not download them
+    # Download the HTML page if it isn't stored locally
     getDocument(MAIN_WEB_PATH, SITE, CACHE_DIRECTORY)
     
     # Get the soup from local file
     with open(MAIN_WEB_PATH, encoding = 'utf8') as url:
-        soup = BeautifulSoup (url, "lxml")
+        soup = BeautifulSoup (url, 'lxml')
         
-    # Pinpoint the cities' name and its crime rate within the local html file
+    # Pinpoint the cities' name and its crime rate within the local HTML file
     table = soup.find('table', {'class': 'wikitable sortable'})
     table_body = table.find('tbody')
     rows = table_body.find_all('tr')
@@ -63,23 +63,23 @@ def main():
         if len(cells)!= 0:
             crimeRate.append(cells[3].find(text=True))
     
-    # For each city, get the link to its own Wikipedia html page
+    # For each city, get the link to its own Wikipedia HTML page
     urlList = [link.get('href') for link in links]
     
-    # Download the html page of each city if you don't have it in your local workspace
+    # If you don't have the HTML page of each city in your local workspace, download them
     indx = 0 
     while (indx < len(cities)):
-        localURL = CACHE_DIRECTORY + cities[indx] + ".html"
+        localURL = CACHE_DIRECTORY + cities[indx] + '.html'
         website = WEB_DOMAIN_NAME + urlList[indx]
         getDocument(localURL, website, CACHE_DIRECTORY)
         indx += 1
     
-    # Calcuating the distance to the closet city border 
+    # Calcuating the distance to the closest city border 
     distance_indx = 0 
     while (distance_indx < len(cities)):
-        localURL = CACHE_DIRECTORY + cities[distance_indx] + ".html"
+        localURL = CACHE_DIRECTORY + cities[distance_indx] + '.html'
         with open(localURL, encoding = 'utf8') as url:
-            city_soup = BeautifulSoup (url, "lxml")
+            city_soup = BeautifulSoup (url, 'lxml')
             coordinates = (city_soup.find('span', class_ = 'geo').text).split(';')
             distanceToBorder.append(smallest_distance(coordinates, border_cities))
             distance_indx += 1
@@ -99,15 +99,15 @@ def main():
     # Get the correlation
     crimeRateFloat = [float(i) for i in crimeRate]
     correlation = coefficient_of_correlation(crimeRateFloat, distanceToBorder)
-    print("The correlation between"
-          + " the city's crime rate and the city's distance to border: \n"
-          + " {}".format(round(correlation, 3)))
+    print('The correlation between'
+          + ' the city's crime rate and the city's distance to border: \n'
+          + '{}'.format(round(correlation, 3)))
     
 
 # Supporting functions
 """
 The function getDocument(LocalURL) first check if the local file exists on your computer. 
-If the file exists, the function will parse the LOCAL html page using beautiful soup 
+If the file exists, the function will parse the LOCAL HTML page using beautiful soup 
 if the file does not exist, the function will automatically download the file for you
 """       
 def getDocument(localURL, site, directory):
