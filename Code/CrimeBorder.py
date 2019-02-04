@@ -100,7 +100,7 @@ def main():
     crimeRateFloat = [float(i) for i in crimeRate]
     correlation = coefficient_of_correlation(crimeRateFloat, distanceToBorder)
     print('The correlation between'
-          + ' the city's crime rate and the city's distance to border: \n'
+          + ' the city\'s crime rate and the city\'s distance to border: \n'
           + '{}'.format(round(correlation, 3)))
     
 
